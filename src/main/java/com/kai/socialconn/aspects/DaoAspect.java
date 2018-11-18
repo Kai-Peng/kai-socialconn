@@ -2,6 +2,7 @@ package com.kai.socialconn.aspects;
 
 import com.kai.socialconn.service.TaskValidator;
 import com.kai.socialconn.service.TaskValidatorImpl;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +19,11 @@ public class DaoAspect {
         System.out.println("this is daoAspect pointCut.");
     }
 
-    @Before("pointCut()")
-    public void before(){
+    @Before("pointCut()&&args(userId)")
+    public void before(JoinPoint jp, String userId) {
         System.out.println("before.....");
+        Object[] args = jp.getArgs();
+        System.out.println("before....."+userId);
     }
 
     @After("pointCut()")

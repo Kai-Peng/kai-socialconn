@@ -21,7 +21,7 @@ public class TaskPush {
 
     @RequestMapping("/")
     public List<Task> getTaskList(){
-        List<Task> tempList = taskService.getTaskList();
+        List<Task> tempList = taskService.getTaskList("user peng kai");
 //        tempList = null;
         if(taskValidator.isLegal(tempList)){
             return tempList;

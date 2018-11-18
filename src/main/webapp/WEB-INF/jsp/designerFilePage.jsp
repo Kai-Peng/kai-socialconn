@@ -6,9 +6,8 @@
 <body>
     <h1>Todo: jsp need to fulfil.</h1>
 
-     <text>${task.id},${task.type}<br>
-         ${task.info}<br>
-         ${task.time},${task.modifyUser}
+     <text>${designerFile.id},${designerFile.designer}<br>
+         ${designerFile.file}
     </text>
 </body>
 </html>

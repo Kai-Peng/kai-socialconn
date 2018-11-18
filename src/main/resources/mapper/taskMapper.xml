@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kai.socialconn.dao.TaskDao">
+    <select id="getTask" parameterType="string" resultType="task">
+        select t.id, t.type, t.info, t.time, t.modifyuser from task t where t.id = #{id}
+    </select>
+
+    <insert id="insertTask" useGeneratedKeys="true" keyProperty="id">
+        insert into task(type,info,time,modifyuser) value (#{type},#{info},#{time},#{modifyUser})
+    </insert>
+    
+    <update id="updateTask">
+        update task
+        <set>
+            <if test="info!=null">info=#{info},</if>
+            <if test="time!=null">time=#{time},</if>
+            <if test="modifyUser!=null">modifyuser=#{modifyUser}</if>
+        </set>
+        where id = #{id}
+    </update>
+    
+    <select id="findByInfoOrTask" resultType="task">
+        select t.id, t.type, t.info, t.time, t.modifyuser from task t
+        <where>
+            <if test="info!=null">
+                and t.info like concat('%',${info},'%')
+            </if>
+            <if test="type!=null">
+                and t.type = #{type}
+            </if>
+        </where>
+    </select>
+    
+    <delete id="deleteTask" parameterType="string">
+        delete from task where id = #{id}
+    </delete>
+</mapper>

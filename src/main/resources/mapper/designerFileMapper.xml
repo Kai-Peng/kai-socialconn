@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?><!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kai.socialconn.dao.DesignerFileDao">
+    <insert id="insertFile" keyProperty="id" useGeneratedKeys="true"
+            parameterType="com.kai.socialconn.pojo.DesignerFile">
+        insert into designer_file(file, designer) values (#{file},#{designer})
+    </insert>
+    
+    <select id="getDesignerFileById" parameterType="int" resultType="com.kai.socialconn.pojo.DesignerFile">
+        select id, file, designer from designer_file where id=#{id}
+    </select>
+</mapper>

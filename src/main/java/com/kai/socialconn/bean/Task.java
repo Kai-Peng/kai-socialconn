@@ -1,8 +1,13 @@
 package com.kai.socialconn.bean;
 
-public class Task {
+import org.apache.ibatis.type.Alias;
+
+import java.io.Serializable;
+
+@Alias(value = "task")
+public class Task implements Serializable {
     private String id;
-    private String type;
+    private TypeEnum type;
     private String info;
     private String time;
     private String modifyUser;
@@ -13,14 +18,6 @@ public class Task {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getInfo() {
@@ -45,5 +42,13 @@ public class Task {
 
     public void setModifyUser(String modifyUser) {
         this.modifyUser = modifyUser;
+    }
+
+    public TypeEnum getType() {
+        return type;
+    }
+
+    public void setType(TypeEnum type) {
+        this.type = type;
     }
 }
