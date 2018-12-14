@@ -14,6 +14,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,7 @@ import javax.annotation.PostConstruct;
 //定义MyBatis的扫描
 @MapperScan(basePackages = "com.kai.socialconn.*",annotationClass = Repository.class)
 @EnableCaching
+@EnableScheduling
 public class SocialconnApplication {
 	//平台事务管理器，Mybatis一般为DataSourceTransactionManager
 	@Autowired

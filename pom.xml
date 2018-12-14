@@ -93,10 +93,10 @@
             <artifactId>jedis</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
@@ -115,6 +115,4 @@
             </plugin>
         </plugins>
     </build>
-
-
 </project>
