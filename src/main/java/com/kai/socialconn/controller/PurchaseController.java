@@ -15,13 +15,13 @@ public class PurchaseController {
     // 定义JSP视图
     @GetMapping("/test")
     public ModelAndView testPage() {
-        ModelAndView mv = new ModelAndView("test");
+        ModelAndView mv = new ModelAndView("purchase");
         return mv;
     }
 
     @PostMapping("/purchase")
     public Result purchase(Long userId, Long productId, Integer quantity) {
-        boolean success = purchaseService.purchase(userId, productId, quantity);
+        boolean success = purchaseService.purchaseRedis(userId, productId, quantity);
         String message = success ? "抢购成功" : "抢购失败";
         Result result = new Result(success, message);
         return result;

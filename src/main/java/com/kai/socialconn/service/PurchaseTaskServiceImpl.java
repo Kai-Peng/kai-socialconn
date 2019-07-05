@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class PurchaseTaskServiceImpl  implements PurchaseTaskService{
     @Autowired
     private StringRedisTemplate stringRedisTemplate = null;
@@ -25,9 +27,9 @@ public class PurchaseTaskServiceImpl  implements PurchaseTaskService{
 
     @Override
     // 每天凌晨1点钟开始执行任务
-    @Scheduled(cron = "0 0 1 * * ?")
+    //@Scheduled(cron = "0 0 1 * * ?")
     // 下面是用于测试的配置，每分钟执行一次任务
-    // @Scheduled(fixedRate = 1000 * 60)
+    @Scheduled(fixedRate = 1000 * 60)
     public void purchaseTask() {
         System.out.println("定时任务开始......");
         Set<String> productIdList = stringRedisTemplate.opsForSet().members(PRODUCT_SCHEDULE_SET);
@@ -35,7 +37,7 @@ public class PurchaseTaskServiceImpl  implements PurchaseTaskService{
         for (String productIdStr : productIdList) {
             Long productId = Long.parseLong(productIdStr);
             String purchaseKey = PURCHASE_PRODUCT_LIST + productId;
-            BoundListOperations<String, String>  ops = stringRedisTemplate.boundListOps(purchaseKey);
+            BoundListOperations<String, String> ops = stringRedisTemplate.boundListOps(purchaseKey);
             // 计算记录数
             long size = stringRedisTemplate.opsForList().size(purchaseKey);
             Long times = size % ONE_TIME_SIZE == 0?size / ONE_TIME_SIZE : size / ONE_TIME_SIZE + 1;
