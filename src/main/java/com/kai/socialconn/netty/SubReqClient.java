@@ -8,11 +8,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 
-public class TimeClient {
-    public void connect(int port, String host) throws Exception{
+public class SubReqClient {
+    public void connect(int port, String host) throws InterruptedException {
         // 配置客户端NIO线程组
         EventLoopGroup group = new NioEventLoopGroup();
         try {
@@ -22,11 +24,14 @@ public class TimeClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
-                            ch.pipeline().addLast(new StringDecoder());
-                            ch.pipeline().addLast(new TimeClientHandler());
+                            ch.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                            ch.pipeline().addLast(new ProtobufDecoder(SubscribeRespProto.SubscribeResp.getDefaultInstance()));
+                            ch.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                            ch.pipeline().addLast(new ProtobufEncoder());
+                            ch.pipeline().addLast(new SubReqClientHandler());
                         }
                     });
+
             // 发起异步连接操作
             ChannelFuture f = b.connect(host, port).sync();
 
@@ -38,15 +43,8 @@ public class TimeClient {
         }
     }
 
-    /**
-     * @Param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws InterruptedException {
         int port = 8080;
-        if (args != null && args.length > 0) {
-            port = Integer.valueOf(args[0]);
-        }
-        new TimeClient().connect(port, "127.0.0.1");
+        new SubReqClient().connect(port, "127.0.0.1");
     }
 }

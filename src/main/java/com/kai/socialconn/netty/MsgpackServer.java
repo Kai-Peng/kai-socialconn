@@ -8,11 +8,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 
-public class TimeServer {
-    public void bind(int port) throws Exception{
+public class MsgpackServer {
+    public void bind(int port) throws Exception {
         // 配置服务端的NIO线程组
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -22,36 +24,34 @@ public class TimeServer {
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 1024)
-                    .childHandler(new ChildChannelHandler());
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast("frameDecoder", new LengthFieldBasedFrameDecoder(65535, 0, 2, 0, 2));
+                            ch.pipeline().addLast("msgpack decoder", new MsgpackDecoder());
+                            ch.pipeline().addLast("frameEncoder", new LengthFieldPrepender(2));
+                            ch.pipeline().addLast("msgpack encoder", new MsgpackEncoder());
+                            ch.pipeline().addLast(new MsgpackServerHandler());
+                        }
+                    });
 
             // 绑定端口，同步等待成功
             ChannelFuture f = b.bind(port).sync();
             // 等待服务端监听端口关闭
             f.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
+        }finally {
             // 优雅退出，释放线程池资源
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-
     }
 
-    private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
-        @Override
-        protected void initChannel(SocketChannel arg0) throws Exception {
-            arg0.pipeline().addLast(new LineBasedFrameDecoder(1024));
-            arg0.pipeline().addLast(new StringDecoder());
-            arg0.pipeline().addLast(new TimeServerHandler());
-        }
-    }
-
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         int port = 8080;
         if(args != null && args.length > 0) {
             port = Integer.valueOf(args[0]);
         }
-        new TimeServer().bind(port);
+        new MsgpackServer().bind(port);
     }
 }
