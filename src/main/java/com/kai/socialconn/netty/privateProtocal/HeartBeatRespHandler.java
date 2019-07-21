@@ -1,0 +1,30 @@
+package com.kai.socialconn.netty.privateProtocal;
+
+import io.netty.channel.ChannelHandlerAdapter;
+import io.netty.channel.ChannelHandlerContext;
+
+public class HeartBeatRespHandler extends ChannelHandlerAdapter {
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        System.out.println("HeartBeatRespHandler : " + System.currentTimeMillis());
+        NettyMessage message = new NettyMessage();
+        // 返回心跳应答消息
+        if (message.getHeader() != null
+                && message.getHeader().getType() == MessageType.HEARTBEAT_REQ.value()) {
+            System.out.println("Receive client heart beat message : --->" + message);
+            NettyMessage heartBeat = buildHeartBeat();
+            System.out.println("Send heart beat response message to client : --->" + heartBeat);
+            ctx.writeAndFlush(heartBeat);
+        } else {
+            ctx.fireChannelRead(msg);
+        }
+    }
+
+    private NettyMessage buildHeartBeat() {
+        NettyMessage message = new NettyMessage();
+        Header hearder = new Header();
+        hearder.setType(MessageType.HEARTBEAT_RESP.value());
+        message.setHeader(hearder);
+        return message;
+    }
+}
