@@ -12,7 +12,6 @@ public class HeartBeatReqHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("HeartBeatReqHandler channelRead: " + System.currentTimeMillis());
         NettyMessage message = (NettyMessage) msg;
 
         // 握手成功，主动发送心跳消息

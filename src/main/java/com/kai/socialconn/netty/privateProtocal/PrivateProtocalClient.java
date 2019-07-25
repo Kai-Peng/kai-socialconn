@@ -40,7 +40,12 @@ public class PrivateProtocalClient {
                     });
 
             // 发起异步连接操作
-            ChannelFuture future = b.connect(host, port).sync();
+            ChannelFuture future = b.connect(
+                    new InetSocketAddress(host, port),
+                    new InetSocketAddress(LOCALIP,
+                            LOCAL_PORT)).sync();
+            // 当对应的channel关闭的时候，就会返回对应的channel。
+            // Returns the ChannelFuture which will be notified when this channel is closed. This method always returns the same future instance.
             future.channel().closeFuture().sync();
         }finally {
             // 释放资源

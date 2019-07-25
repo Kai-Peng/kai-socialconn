@@ -1,28 +1,28 @@
 package com.kai.socialconn.netty.privateProtocal;
 
-public class NettyMessage {
+public final class NettyMessage {
     private Header header;
 
     private Object body;
 
-    public Header getHeader() {
+    public final Header getHeader() {
         return header;
     }
 
-    public void setHeader(Header header) {
+    public final void setHeader(Header header) {
         this.header = header;
     }
 
-    public Object getBody() {
+    public final Object getBody() {
         return body;
     }
 
-    public void setBody(Object body) {
+    public final void setBody(Object body) {
         this.body = body;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "NettyMessage [header=" + header + "]";
     }
 }

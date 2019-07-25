@@ -11,7 +11,6 @@ public class LoginAuthReqHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("LoginAuthReqHandler : " + System.currentTimeMillis());
         NettyMessage message = (NettyMessage) msg;
 
         if (message.getHeader() != null
@@ -33,7 +32,6 @@ public class LoginAuthReqHandler extends ChannelHandlerAdapter {
         Header header = new Header();
         header.setType(MessageType.LOGIN_REQ.value());
         message.setHeader(header);
-        System.out.println("buildLoginReq: " + message.toString());
         return message;
     }
 

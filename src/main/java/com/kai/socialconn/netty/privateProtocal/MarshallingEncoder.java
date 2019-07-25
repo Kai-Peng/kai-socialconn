@@ -1,10 +1,12 @@
 package com.kai.socialconn.netty.privateProtocal;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import org.jboss.marshalling.Marshaller;
 
 import java.io.IOException;
 
+@ChannelHandler.Sharable
 public class MarshallingEncoder {
     private static final byte[] LENGTH_PLACEHOLDER = new byte[4];
     Marshaller marshaller;
